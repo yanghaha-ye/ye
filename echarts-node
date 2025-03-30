@@ -1,0 +1,52 @@
+# 框选：
+ ```js
+  //  初始化
+  this.echart = echarts.init(this.chartContainer.nativeElement);
+  // 配置
+  this.option = {
+    tooltip: {
+      trigger: 'axis'
+    },
+    // 框选的配置
+    brush: {
+      toolbox: ['rect', 'polygon']
+    },
+    xAxis: {
+      type: 'value'
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [{
+      type: 'scatter',
+      data: this.generateTestData(),
+    }]
+  };
+  this.mychart.setOption(this.option);
+  let selectedIndices;
+  // 框选事件
+  this.mychart.on('brunshSelected',(params) => {
+    // 框选区域数据在option里series数据中的索引数组
+    selectedIndices = params.batch[0].selected.map(item => item.dataIndex);
+  });
+  // 框选事件结束
+  this.mychart.on('brushEnd', (event) => {
+    const data = this.option.series[0].data.filter((_, index) => {
+      return !selectedIndices[0].includes(index);
+    });
+    this.option.series[0].data = data;
+    // 清除框选
+    this.mychart.dispatchAction({
+      type: 'brush',
+      areas: []
+    })
+  });
+  generateTestData() {
+    const data = [];
+    for (let i = 0; i < 100; i++) {
+      data.push([Math.random() * 100, Math.random() * 100]);
+    }
+    console.log(data);
+    return data;
+  }
+ ```

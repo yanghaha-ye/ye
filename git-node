@@ -1,0 +1,60 @@
+# git挽救职业生涯的操作
+## 误删本地分支或者远程分支
+```js
+    git reflog show --date=iso // 标准事件显示每次的命令
+    git show commitId // 查看这次提交是否是想要恢复的
+    git checkout -b 要恢复的分支名 commitId
+    git push
+```
+## 提交记录没了
+```js
+    git reflog show --date=iso 或者 git reflog
+    git reset --hard commitId
+```
+## 本地代码未缓存，操作失误丢掉
+```js
+    IDE编辑器会有保存了历史
+    选择想要恢复的文件夹，file--local history---找到想恢复的文件--revert
+```
+# 常见操作
+## merge时的会产生一条 merge提交记录 如何精简
+```js
+    git pull origin master --rebase
+```
+## 单提交合并
+```js
+    git cherry-pick commitID
+    如果有冲突，解决冲突后
+    git cherry-pick continue
+```
+## 多次提交记录合并
+```js
+    1、git log
+    2、git rebase -i HEAD~2 (那几次)
+    3、vim界面，暴露第一次提交记录前的pick，其余全改成s，esc退出编辑模式，:wq退出并保存
+    4、出现问题--大概率是冲突
+    5、git rebase --continue // 查看冲突文件
+    6、处理冲突-处理完 vim界面删除不保留的提示信息
+    7、重复上述操作直至全部处理完毕
+    8、git log 查看合并是否成功
+    9、git status 查看当前状态
+    10、git push -f // 如果不是强制，会提示需要pull的（微笑）
+    注意：git rebase --abort撤回合并
+```
+## 回退
+```js
+    git reset --hard commitId // 强制回退到某次提交
+    git reset --soft commitId // 此次提交记录前的提交记录会全部缓存到本地
+```
+## fork流程
+```js
+    1、创建个人仓库
+    2、将个人仓库拉倒本地
+        git clone XX
+    3、个人仓库关联原始仓库
+        git remote add upstream 原始仓库clone地址
+    4、更新原始仓库代码到个人仓库
+        git fetch upstream
+        git merge upstream/xx(需要更新的代码仓)
+
+```
